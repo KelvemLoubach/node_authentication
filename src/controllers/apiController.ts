@@ -15,12 +15,17 @@ export const register = async (req: Request, res: Response) => {
 
             res.status(201);
             res.json({ id: newUser.id });
+            return;
         } else {
             res.json({ error: 'E-mail já existe.' });
+            return;
         }
     }
 
     res.json({ error: 'E-mail e/ou senha não enviados.' });
+    return;
+    
+   
 }
 
 export const login = async (req: Request, res: Response) => {
@@ -45,9 +50,10 @@ export const list = async (req: Request, res: Response) => {
     let users = await User.findAll();
     let list: string[] = [];
 
-    for(let i in users) {
-        list.push( users[i].email );
+    for(let x in users) {
+        list.push( users[x].email );
     }
 
     res.json({ list });
+    return;
 }
