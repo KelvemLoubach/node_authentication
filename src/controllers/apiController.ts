@@ -1,20 +1,27 @@
 import { Request, Response } from 'express';
+import JWT from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import { User } from '../models/User';
 
-export const ping = (req: Request, res: Response) => {
-    res.json({pong: true});
-}
+dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
     if(req.body.email && req.body.password) {
         let { email, password } = req.body;
 
         let hasUser = await User.findOne({where: { email }});
+
         if(!hasUser) {
             let newUser = await User.create({ email, password });
 
+            const token = JWT.sign(
+                {email: newUser.email, password: newUser.password},
+                process.env.JWT_SECRET as string,
+                {expiresIn: '5h'}
+            );
+
             res.status(201);
-            res.json({ id: newUser.id });
+            res.json({ id: newUser.id, token});
             return;
         } else {
             res.json({ error: 'E-mail já existe.' });
@@ -38,8 +45,17 @@ export const login = async (req: Request, res: Response) => {
         });
 
         if(user) {
-            res.json({ status: true });
-            return;
+
+            const token = JWT.sign(
+                {email: user.email, password: user.password},
+                process.env.JWT_SECRET as string,
+                {expiresIn: '5h'}
+            );
+            
+           
+            return res.json({ token});
+            return res.json({ status: true });
+       
         }
     }
 
@@ -54,6 +70,6 @@ export const list = async (req: Request, res: Response) => {
         list.push( users[x].email );
     }
 
-    res.json({ list });
-    return;
+    return res.json({ list });
+    
 }
