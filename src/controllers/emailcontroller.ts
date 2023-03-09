@@ -6,12 +6,12 @@ export const contato = async (req: Request, res:Response)=>{
 
     //Configurando o trasnporte
     let transport = nodemailer.createTransport({
-        host: "sandbox.smtp.mailtrap.io",
-        port: 2525,
+        host: "smtp.gmail.com",
+        port: 587,
         auth: {
-          user: "e0ffde12833737",
-          pass: "14cd49204e9fda"
-        }
+          user: "kelvem21@gmail.com",
+          pass: "programacaojS21"
+        } 
       });
       //Configurando a mensagem
       let message = {

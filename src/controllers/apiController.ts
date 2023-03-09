@@ -36,29 +36,26 @@ export const register = async (req: Request, res: Response) => {
 }
 
 export const login = async (req: Request, res: Response) => {
-    if(req.body.email && req.body.password) {
+
+    if(req.body.email.toLowerCase() === process.env.USER_LOGIN as string && req.body.password) {
         let email: string = req.body.email;
         let password: string = req.body.password;
 
         let user = await User.findOne({ 
             where: { email, password }
         });
-
-        if(user) {
-
+  
+ 
+        if(user ) {
             const token = JWT.sign(
                 {email: user.email, password: user.password},
                 process.env.JWT_SECRET as string,
                 {expiresIn: '5h'}
             );
-            
-           
             return res.json({ token});
-            return res.json({ status: true });
-       
         }
     }
-
+ 
     res.json({ status: false });
 }
 
@@ -69,7 +66,5 @@ export const list = async (req: Request, res: Response) => {
     for(let x in users) {
         list.push( users[x].email );
     }
-
-    return res.json({ list });
-    
-}
+    return res.json({ list });   
+} 
